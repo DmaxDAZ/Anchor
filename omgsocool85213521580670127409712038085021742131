@@ -196,40 +196,46 @@ function BringAndFreezeMultipleMobs(PosMon, NameM)
             local hum = mob:FindFirstChildOfClass("Humanoid")
 
             if hrp and hum and hum.Health > 0 then
+                -- Clean up any existing BodyPosition or BodyGyro if they exist
                 for _, v in ipairs(hrp:GetChildren()) do
                     if v:IsA("BodyPosition") or v:IsA("BodyGyro") then
                         v:Destroy()
                     end
                 end
 
+                -- Freeze the mob (disable movement and set the position to the target)
                 hrp.CanCollide = false
-                hrp.Anchored = false
+                hrp.Anchored = false  -- Ensure this is set to false for movement via BodyPosition
                 hrp.AssemblyLinearVelocity = Vector3.zero
                 hrp.AssemblyAngularVelocity = Vector3.zero
 
+                -- Disable collision on all parts of the mob
                 for _, part in pairs(mob:GetDescendants()) do
                     if part:IsA("BasePart") then
                         part.CanCollide = false
                     end
                 end
 
+                -- Create BodyPosition and BodyGyro to bring and freeze the mob
                 local bp = Instance.new("BodyPosition")
                 bp.Name = "BringBP"
-                bp.MaxForce = Vector3.new(1e9, 1e9, 1e9)  
-                bp.D = 1000 
-                bp.P = 10000 
-                bp.Position = PosMon.Position
+                bp.MaxForce = Vector3.new(1e9, 1e9, 1e9)  -- Ensure maximum force to move the mob
+                bp.D = 1000  -- Damping
+                bp.P = 10000  -- Power
+                bp.Position = PosMon.Position  -- Set the target position
                 bp.Parent = hrp
 
                 local bg = Instance.new("BodyGyro")
                 bg.Name = "FreezeGyro"
-                bg.MaxTorque = Vector3.new(1e9, 1e9, 1e9) 
-                bg.P = 1e9
-                bg.CFrame = CFrame.new(PosMon.Position) 
+                bg.MaxTorque = Vector3.new(1e9, 1e9, 1e9)  -- Maximum torque to keep orientation stable
+                bg.P = 1e9  -- Gyro power
+                bg.CFrame = CFrame.new(PosMon.Position)  -- Keep orientation aligned
                 bg.Parent = hrp
 
+                -- Ensure that we continuously check and clean up when the mob is at the target position or if it dies
                 local conn
                 conn = game:GetService("RunService").RenderStepped:Connect(function()
+                    -- If the mob is destroyed or the humanoid dies, remove the BodyPosition and BodyGyro
                     if not mob or not mob.Parent or hum.Health <= 0 then
                         if bp and bp.Parent then bp:Destroy() end
                         if bg and bg.Parent then bg:Destroy() end
@@ -237,6 +243,7 @@ function BringAndFreezeMultipleMobs(PosMon, NameM)
                         return
                     end
 
+                    -- Stop the motion when the mob is close to the target position
                     if (hrp.Position - PosMon.Position).Magnitude < 1 then
                         if bp and bp.Parent then bp:Destroy() end
                     end
@@ -245,6 +252,7 @@ function BringAndFreezeMultipleMobs(PosMon, NameM)
         end
     end
 end
+
 
 
 
