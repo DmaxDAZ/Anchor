@@ -344,11 +344,6 @@ function topos(Pos)
 	pcall(function() tween = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart,TweenInfo.new(Distance/300, Enum.EasingStyle.Linear),{CFrame = Pos}) end)
 	tween:Play()
 
-	if Distance >= 100000000 then
-		tween:Cancel()
-		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Pos
-	end
-
 	if Distance <= 250 then
 		tween:Cancel()
 		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Pos
