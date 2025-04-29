@@ -204,14 +204,10 @@ local function teleportWithCustomSpeed(character: Model, targetPosition: Vector3
 	end)
 end
 
-
-
-
-
-
 local RunService = game:GetService("RunService")
 
 function BringAndFreezeMultipleMobs(PosMon, NameM)
+	CheckQuest()
     local enemies = workspace:FindFirstChild("Enemies")
     if not enemies then return end
 
@@ -221,45 +217,42 @@ function BringAndFreezeMultipleMobs(PosMon, NameM)
             local hum = mob:FindFirstChildOfClass("Humanoid")
 
             if hrp and hum and hum.Health > 0 then
-                -- ลบ BodyMover แปลกปลอมทั้งหมด
+                -- ลบ BodyMover แปลกปลอม
                 for _, v in ipairs(hrp:GetChildren()) do
                     if v:IsA("BodyMover") or v:IsA("BodyPosition") or v:IsA("BodyGyro") then
                         v:Destroy()
                     end
                 end
 
-                -- ตั้งค่าฟิสิกส์พื้นฐาน
                 hrp.Anchored = false
                 hrp.CanCollide = false
                 hrp.AssemblyLinearVelocity = Vector3.zero
                 hrp.AssemblyAngularVelocity = Vector3.zero
 
-                -- ปิดการชนทุกชิ้นส่วน แต่ยังคงแสดงผล
                 for _, part in ipairs(mob:GetDescendants()) do
                     if part:IsA("BasePart") then
-                        part.Anchored = false
                         part.CanCollide = false
+                        part.Anchored = false
                         part.Transparency = 0
                     end
                 end
 
-                -- สร้าง BodyMover ของเรา
                 local bp = Instance.new("BodyPosition")
                 bp.Name = "BringBP"
-                bp.MaxForce = Vector3.new(1e9, 1e9, 1e9)
+                bp.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
                 bp.D = 1000
-                bp.P = 20000
+                bp.P = 10000
                 bp.Position = PosMon.Position
                 bp.Parent = hrp
 
                 local bg = Instance.new("BodyGyro")
                 bg.Name = "FreezeGyro"
-                bg.MaxTorque = Vector3.new(1e9, 1e9, 1e9)
-                bg.P = 1e5
+                bg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+                bg.P = 1e9
                 bg.CFrame = CFrame.new(PosMon.Position)
                 bg.Parent = hrp
 
-                -- ใช้ RenderStepped เพื่อล็อกและควบคุมอย่างราบรื่น
+                -- RenderStepped: รันทุกเฟรมตาม FPS
                 local conn
                 conn = RunService.RenderStepped:Connect(function()
                     if not mob or not mob.Parent or hum.Health <= 0 then
@@ -269,18 +262,15 @@ function BringAndFreezeMultipleMobs(PosMon, NameM)
                         return
                     end
 
-                    -- ลบ BodyMover แปลกปลอมที่อาจถูกแทรก
+                    -- ลบ BodyMover อื่นที่ไม่ใช่ของเรา
                     for _, v in ipairs(hrp:GetChildren()) do
-                        if (v:IsA("BodyMover") or v:IsA("BodyPosition") or v:IsA("BodyGyro")) and not (v.Name == "BringBP" or v.Name == "FreezeGyro") then
+                        if (v:IsA("BodyMover") or v:IsA("BodyPosition") or v:IsA("BodyGyro")) 
+                            and not (v.Name == "BringBP" or v.Name == "FreezeGyro") then
                             v:Destroy()
                         end
                     end
 
-                    -- อัปเดตตำแหน่งเป้าหมาย (หาก PosMon เคลื่อนที่)
-                    bp.Position = PosMon.Position
-                    bg.CFrame = CFrame.new(PosMon.Position)
-
-                    -- หยุดดึงเมื่อเข้าใกล้เป้าหมาย
+                    -- หยุด BodyPosition เมื่ออยู่ใกล้
                     if (hrp.Position - PosMon.Position).Magnitude < 1 then
                         if bp and bp.Parent then bp:Destroy() end
                     end
@@ -354,7 +344,7 @@ function topos(Pos)
 	pcall(function() tween = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart,TweenInfo.new(Distance/300, Enum.EasingStyle.Linear),{CFrame = Pos}) end)
 	tween:Play()
 
-	if Distance < 15000 then
+	if Distance < 100000 then
 		tween:Cancel()
 		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Pos
 	end
