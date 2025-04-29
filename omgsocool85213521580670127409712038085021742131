@@ -2,7 +2,7 @@ _G.Auto_Farm_Level = false
 _G.Select_Mode_Farm = false
 _G.StopTween = false
 _G.BringMonster = false
-_G.Smooth = false -- loadstring(game:HttpGet("https://raw.githubusercontent.com/DmaxDAZ/Anchor/refs/heads/main/omgsocool85213521580670127409712038085021742131"))()
+_G.Smooth = false
 _G.LOL = false
 _G.LOL2 = false
 _G.LOL3 = false
@@ -21,16 +21,6 @@ platform.CFrame = hrp.CFrame * CFrame.new(0,-4,0)
 platform.Transparency = 0.65
 
 local RunService = game:GetService("RunService")
-
-function AddStat(Amount, String)
-local args = {
-    [1] = "AddPoint",
-    [2] = String,
-    [3] = Amount
-}
-
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer(unpack(args))
-end
 
 function CheckQuest()
 	local lvl = game:GetService("Players").LocalPlayer.Data.Level.Value
@@ -98,14 +88,45 @@ function CheckQuest()
 	  NameM = "Prisoner"
 	  NameQ = "PrisonerQuest"
 	  LvQ = 1
-	  CFQ = CFrame.new(5292.65479, 1.69024372, 476.25116, 0.590839922, -6.76810501e-08, -0.806788802, 3.3240517e-09, 1, -8.14551129e-08, 0.806788802, 4.54451232e-08, 0.590839922)
+	  CFQ = CFrame.new(5143.30859, 3.97507429, 428.785309, 0.382378161, -8.40424086e-09, 0.924005926, 5.94223382e-09, 1, 6.636387e-09, -0.924005926, 2.95305003e-09, 0.382378161)
   elseif lvl >= 250 then
 	  NameM = "Dangerous Prisoner"
 	  NameQ = "PrisonerQuest"
 	  LvQ = 2
-	  CFQ = CFrame.new(5292.65479, 1.69024372, 476.25116, 0.590839922, -6.76810501e-08, -0.806788802, 3.3240517e-09, 1, -8.14551129e-08, 0.806788802, 4.54451232e-08, 0.590839922)
+	  CFQ = CFrame.new(5601.24023, 1.68107975, 881.85083, 0.989786327, -6.97445568e-09, -0.142558679, 2.95220759e-09, 1, -2.8426193e-08, 0.142558679, 2.77149965e-08, 0.989786327)
+ elseif lvl >= 250 and lvl <= 274 then
+	  NameM = "Toga Warrior"
+	  NameQ = "ColosseumQuest"
+	  LvQ = 1
+	  CFQ = CFrame.new(5601.24023, 1.68107975, 881.85083, 0.989786327, -6.97445568e-09, -0.142558679, 2.95220759e-09, 1, -2.8426193e-08, 0.142558679, 2.77149965e-08, 0.989786327)
+ elseif lvl >= 275 and lvl <= 299 then
+	  NameM = "Gladiator"
+	  NameQ = "ColosseumQuest"
+	  LvQ = 2
+	  CFQ = CFrame.new(-1411.89465, 7.48880672, -3283.92407, 0.0701956302, 3.68725779e-08, 0.997533262, 2.26122285e-08, 1, -3.85549619e-08, -0.997533262, 2.52628389e-08, 0.0701956302)
+elseif lvl >= 300 and lvl <= 324 then
+	  NameM = "Military Soldier"
+	  NameQ = "MagmaQuest"
+	  LvQ = 1
+	  CFQ = CFrame.new(-5383.92236, 59.8453712, 8561.51172, -0.994474709, 2.91136661e-08, 0.104976572, 2.07447641e-08, 1, -8.08134857e-08, -0.104976572, -7.81892524e-08, -0.994474709)
+elseif lvl >= 325 and lvl <= 374 then
+	  NameM = "Military Spy"
+	  NameQ = "MagmaQuest"
+	  LvQ = 2
+	  CFQ = CFrame.new(-5805.18799, 99.535881, 8783.84668, 0.0313555822, -7.90363899e-08, 0.999508321, -6.39658282e-08, 1, 8.108195e-08, -0.999508321, -6.64767441e-08, 0.0313555822)
+elseif lvl >= 375 and lvl <= 399 then
+	  NameM = "Fishman Warrior"
+	  NameQ = "FishmanQuest"
+	  LvQ = 1
+	  CFQ = CFrame.new(60931.2305, 18.5180321, 1432.87427, 0.860211194, 1.83337123e-10, 0.509937942, -4.48087834e-09, 1, 7.19923809e-09, -0.509937942, -8.47783532e-09, 0.860211194)
+elseif lvl >= 400 and lvl <= 399 then
+	  NameM = "Fishman Commando"
+	  NameQ = "FishmanQuest"
+	  LvQ = 2
+	  CFQ = CFrame.new(61889.3672, 18.5292473, 1462.50867, 0.782466471, 3.99922655e-08, -0.622692704, 1.43512109e-08, 1, 8.22582393e-08, 0.622692704, -7.33007113e-08, 0.782466471)
 	end
 end
+
 
 function GetQuest()
 	CheckQuest()
@@ -332,6 +353,12 @@ function topos(Pos)
 	if game.Players.LocalPlayer.Character.Humanoid.Sit == true then game.Players.LocalPlayer.Character.Humanoid.Sit = false end
 	pcall(function() tween = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart,TweenInfo.new(Distance/300, Enum.EasingStyle.Linear),{CFrame = Pos}) end)
 	tween:Play()
+
+	if Distance < 15000 then
+		tween:Cancel()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Pos
+	end
+
 	if Distance <= 250 then
 		tween:Cancel()
 		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Pos
