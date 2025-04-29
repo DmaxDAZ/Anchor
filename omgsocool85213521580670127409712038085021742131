@@ -13,7 +13,7 @@ local plr = game.Players.LocalPlayer
 local char = plr.Character
 local hrp = char.HumanoidRootPart
 
-local platform = Instance.new("Part", char)
+local platform = Instance.new("Part", workspace)
 platform.Name = "Platform"
 platform.Size = Vector3.new(200,1,200)
 platform.Anchored = true
@@ -338,6 +338,16 @@ function topos(Pos)
 	if game.Players.LocalPlayer.Character.Humanoid.Sit == true then game.Players.LocalPlayer.Character.Humanoid.Sit = false end
 	pcall(function() tween = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart,TweenInfo.new(Distance/300, Enum.EasingStyle.Linear),{CFrame = Pos}) end)
 	tween:Play()
+
+	if Distance <= 250 then
+    tween:Cancel()
+	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Pos
+	end
+
+	if Distance >= 100000000 then
+    tween:Cancel()
+	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Pos
+	end
 
 	if _G.StopTween == true then
 		tween:Cancel()
