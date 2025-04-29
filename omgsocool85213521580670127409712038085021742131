@@ -333,11 +333,6 @@ end
 
 function topos(Pos)
 	local hrp = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-		for i, v in pairs(game.Workspace:GetChildren()) do
-              if v.Name == "TweenPlatform" then
-				v:Destroy()
-			  end
-		end
 
 	Distance = (Pos.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
 	if game.Players.LocalPlayer.Character.Humanoid.Sit == true then game.Players.LocalPlayer.Character.Humanoid.Sit = false end
